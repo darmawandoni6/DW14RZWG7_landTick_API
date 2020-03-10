@@ -42,6 +42,7 @@ app.group("/api/v1", router => {
   router.post("/addTiket", authenticated, kereta.addTiket);
   router.get("/tikets", kereta.tickets);
   router.get("/ticketAll", kereta.ticketAll);
+  // router.get("/tickettoday", kereta.ticketToday);
   router.get("/buytiket/:id", authenticated, kereta.buytiket);
 
   //sn
@@ -57,6 +58,10 @@ app.group("/api/v1", router => {
   router.get("/payment", authenticated, payment.payment);
   router.get("/payment2", authenticated, payment.transfer);
   router.patch("/payment/:id", authenticated, payment.updatePaymnet);
+  router.delete("/payment/:id", authenticated, payment.deletePayment);
+
+  //search
+  router.get("/search", kereta.search);
 });
 
 app.listen(port, () => console.log(`Listening on port ${port}!`));

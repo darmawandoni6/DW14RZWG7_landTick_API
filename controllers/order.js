@@ -44,7 +44,12 @@ exports.listOrder = async (req, res) => {
           model: Payment
         },
         {
-          model: Kereta
+          model: Kereta,
+          include: [
+            {
+              model: Typekereta
+            }
+          ]
         }
       ]
     });

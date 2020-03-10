@@ -1,5 +1,7 @@
 const Kereta = require("../models").kereta;
 const Type = require("../models").typekereta;
+const Sequelize = require("sequelize");
+const Op = Sequelize.Op;
 
 exports.addTiket = async (req, res) => {
   try {
@@ -39,10 +41,11 @@ exports.tickets = async (req, res) => {
 
 exports.ticketAll = async (req, res) => {
   try {
-    // const q = req.query;
+    const q = req.query;
     // console.log(q.param1);
 
     const data = await Kereta.findAll({
+      where: { dateStart: q.param1 },
       include: [
         {
           model: Type
@@ -71,6 +74,21 @@ exports.buytiket = async (req, res) => {
   } catch (error) {
     res.status(401).send({
       msg: "error"
+    });
+  }
+};
+
+exports.search = async (req, res) => {
+  try {
+    const data = await Kereta.findAll({
+      where: { name_train: { [Op.like]: `%${req.query.search}%` } }
+    });
+    res.send({
+      data
+    });
+  } catch (error) {
+    res.status(401).send({
+      msg: error.message
     });
   }
 };

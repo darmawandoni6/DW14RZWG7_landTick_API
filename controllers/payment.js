@@ -87,3 +87,21 @@ exports.updatePaymnet = async (req, res) => {
     });
   }
 };
+
+exports.deletePayment = async (req, res) => {
+  try {
+    const data = order.destroy({
+      where: { id_payment: req.params.id }
+    });
+    const data2 = Payment.destroy({
+      where: { id: req.params.id }
+    });
+    res.send({
+      msg: "data berhasil di delete"
+    });
+  } catch (error) {
+    res.status(401).send({
+      error: error.message
+    });
+  }
+};
