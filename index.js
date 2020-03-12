@@ -26,6 +26,7 @@ const Sn = require("./controllers/sn");
 const order = require("./controllers/order");
 const payment = require("./controllers/payment");
 
+app.use(express.static("images"));
 app.group("/api/v1", router => {
   //login
   router.post("/auth", login.auth);
@@ -53,6 +54,7 @@ app.group("/api/v1", router => {
   router.post("/order", authenticated, order.order);
   router.get("/list", authenticated, order.listOrder);
   router.get("/list/:id", authenticated, order.listOrderDetail);
+  router.get("/list-order", authenticated, order.orderListUser);
 
   //payment
   router.get("/payment", authenticated, payment.payment);
@@ -62,6 +64,9 @@ app.group("/api/v1", router => {
 
   //search
   router.get("/search", kereta.search);
+
+  // upload
+  router.post("/upload/:id", payment.uploadData);
 });
 
 app.listen(port, () => console.log(`Listening on port ${port}!`));

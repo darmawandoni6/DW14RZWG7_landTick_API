@@ -6,13 +6,12 @@ const Typekereta = require("../models").typekereta;
 
 exports.order = async (req, res) => {
   try {
-    const { no_invoice, id_tiket, qty, totalPrice } = req.body;
-
+    const { qty, totalPrice, no_invoice, id_tiket } = req.body;
     const payment = {
       qty,
       totalPrice,
       status: "Pending",
-      attachment: "bca.jpg"
+      attachment: ""
     };
     const data = await Payment.create(payment);
 
@@ -27,8 +26,10 @@ exports.order = async (req, res) => {
       msg: "Success"
     });
   } catch (error) {
+    console.log(error.message);
+
     res.status(401).send({
-      msg: "Error"
+      msg: error.message
     });
   }
 };
@@ -51,7 +52,8 @@ exports.listOrder = async (req, res) => {
             }
           ]
         }
-      ]
+      ],
+      order: [["id", "desc"]]
     });
     res.send({
       data
@@ -90,6 +92,39 @@ exports.listOrderDetail = async (req, res) => {
   } catch (error) {
     res.status(401).send({
       msg: "Error"
+    });
+  }
+};
+
+exports.orderListUser = async (req, res) => {
+  try {
+    const data = await Order.findAll({
+      where: { id_user: req.user.userId },
+
+      include: [
+        {
+          model: Payment
+        },
+        {
+          model: User
+        },
+        {
+          model: Kereta,
+          include: [
+            {
+              model: Typekereta
+            }
+          ]
+        }
+      ]
+    });
+
+    res.send({
+      data
+    });
+  } catch (error) {
+    res.status(401).send({
+      message: error.message
     });
   }
 };

@@ -4,13 +4,49 @@ const User = require("../models").user;
 const Kereta = require("../models").kereta;
 const Type = require("../models").typekereta;
 
+const multer = require("multer");
+const path = require("path");
+
+const storage = multer.diskStorage({
+  destination: path.join(__dirname + "./../images/"),
+  filename: function(req, file, cb) {
+    cb(null, "IMAGE-" + Date.now() + path.extname(file.originalname));
+  }
+});
+const upload = multer({
+  storage: storage,
+  limits: { fileSize: 1000000 }
+}).single("myImage");
+
+exports.uploadData = (req, res) => {
+  upload(req, res, err => {
+    console.log("Request ---", req.body);
+    console.log("Request file ---", req.file);
+
+    const data = {
+      attachment: req.file.filename
+    };
+    // if (!err) return res.send(200).end();
+    if (!err) {
+      Payment.update(data, { where: { id: req.params.id } })
+        .then(upload => {
+          res.send({ msg: "Success" });
+        })
+        .catch(err => {
+          res.status(401).send({ msg: err.message });
+        });
+    } else console.log(err.message);
+  });
+};
+
 exports.payment = async (req, res) => {
   try {
     const data = await order.findAll({
       where: { id_user: req.user.userId },
       include: [
         {
-          model: Payment
+          model: Payment,
+          where: { status: "Pending" }
         },
         {
           model: User

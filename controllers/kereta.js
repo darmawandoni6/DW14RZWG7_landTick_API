@@ -80,8 +80,20 @@ exports.buytiket = async (req, res) => {
 
 exports.search = async (req, res) => {
   try {
+    const tgl = new Date();
+    console.log(tgl);
+
     const data = await Kereta.findAll({
-      where: { name_train: { [Op.like]: `%${req.query.search}%` } }
+      where: {
+        [Op.or]: [
+          { name_train: { [Op.like]: `%${req.query.search}%` } },
+          {
+            dateStart: {
+              [Op.between]: [setTgl(req.query.tgl1), setTgl(req.query.tgl2)]
+            }
+          }
+        ]
+      }
     });
     res.send({
       data
@@ -91,4 +103,17 @@ exports.search = async (req, res) => {
       msg: error.message
     });
   }
+};
+
+let setTgl = dt => {
+  let tgl = "";
+  let ft = new Date(dt);
+  let y = ft.getFullYear();
+  let m = ft.getMonth();
+  if (m < 10) m = "0" + (m + 1);
+  let t = ft.getDate();
+  if (t < 10) t = "0" + t;
+
+  tgl = y + "-" + m + "-" + t;
+  return tgl;
 };
