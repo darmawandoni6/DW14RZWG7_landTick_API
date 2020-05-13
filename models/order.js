@@ -1,27 +1,31 @@
 "use strict";
 module.exports = (sequelize, DataTypes) => {
-  const order = sequelize.define(
-    "order",
+  const orders = sequelize.define(
+    "orders",
     {
-      no_invoice: DataTypes.STRING,
-      barcode: DataTypes.STRING,
-      id_tiket: DataTypes.INTEGER,
-      id_user: DataTypes.INTEGER,
-      id_payment: DataTypes.INTEGER
+      noOrder: DataTypes.STRING,
+      idUser: DataTypes.INTEGER,
+      idKereta: DataTypes.INTEGER,
+      qty: DataTypes.INTEGER,
+      harga: DataTypes.INTEGER,
+      status: DataTypes.ENUM("Pending", "Success", "Cancel"),
     },
     {}
   );
-  order.associate = function(models) {
+  orders.associate = function (models) {
     // associations can be defined here
-    order.belongsTo(models.kereta, {
-      foreignKey: "id_tiket"
+    orders.belongsTo(models.trains, {
+      foreignKey: "idKereta",
+      as: "train",
     });
-    order.belongsTo(models.user, {
-      foreignKey: "id_user"
+    orders.belongsTo(models.users, {
+      foreignKey: "idUser",
+      as: "user",
     });
-    order.belongsTo(models.payment, {
-      foreignKey: "id_payment"
+    orders.hasMany(models.payments, {
+      foreignKey: "idOrder",
+      as: "payment",
     });
   };
-  return order;
+  return orders;
 };

@@ -1,130 +1,78 @@
-const Order = require("../models").order;
-const Payment = require("../models").payment;
-const User = require("../models").user;
-const Kereta = require("../models").kereta;
-const Typekereta = require("../models").typekereta;
+const response = require("../helpers/response");
+const responseError = require("../helpers/response-error");
+const userService = require("../services/user");
+const orderService = require("../services/order");
 
-exports.order = async (req, res) => {
-  try {
-    const { qty, totalPrice, no_invoice, id_tiket } = req.body;
-    const payment = {
-      qty,
-      totalPrice,
-      status: "Pending",
-      attachment: ""
-    };
-    const data = await Payment.create(payment);
+module.exports = {
+  show: async (req, res) => {
+    try {
+      const result = await orderService.show();
+      return res.status(200).json(response(result));
+    } catch (error) {
+      if (error.name)
+        return res.status(200).json(responseError(400, error.name));
+      return res.status(200).json(responseError(400, error.toString()));
+    }
+  },
+  showById: async (req, res) => {
+    try {
+      console.log(req.user);
 
-    const order = {
-      no_invoice,
-      id_tiket,
-      id_user: req.user.userId,
-      id_payment: data.id
-    };
-    const data2 = await Order.create(order);
-    res.send({
-      msg: "Success"
-    });
-  } catch (error) {
-    console.log(error.message);
+      const id = req.user.userId;
+      const findOrder = await orderService.showById(id);
+      if (!findOrder) return res.status(200).json(responseError(404));
 
-    res.status(401).send({
-      msg: error.message
-    });
-  }
-};
+      const findUser = await userService.showById(id);
+      if (!findUser) return res.status(200).json(responseError(404));
 
-exports.listOrder = async (req, res) => {
-  try {
-    const data = await Order.findAll({
-      include: [
-        {
-          model: User
-        },
-        {
-          model: Payment
-        },
-        {
-          model: Kereta,
-          include: [
-            {
-              model: Typekereta
-            }
-          ]
-        }
-      ],
-      order: [["id", "desc"]]
-    });
-    res.send({
-      data
-    });
-  } catch (error) {
-    res.status(401).send({
-      msg: "Error"
-    });
-  }
-};
+      return res.status(200).json(
+        response({
+          order: findOrder,
+          user: findUser,
+        })
+      );
+    } catch (error) {
+      if (error.name)
+        return res.status(200).json(responseError(400, error.name));
+      return res.status(200).json(responseError(400, error.toString()));
+    }
+  },
+  showByOrder: async (req, res) => {
+    try {
+      const id = req.user.userId;
+      const findOrder = await orderService.showByOrder(id);
+      if (!findOrder) return res.status(200).json(responseError(404));
 
-exports.listOrderDetail = async (req, res) => {
-  try {
-    const data = await Order.findOne({
-      where: { id: req.params.id },
-      include: [
-        {
-          model: User
-        },
-        {
-          model: Payment
-        },
-        {
-          model: Kereta,
-          include: [
-            {
-              model: Typekereta
-            }
-          ]
-        }
-      ]
-    });
-    res.send({
-      data
-    });
-  } catch (error) {
-    res.status(401).send({
-      msg: "Error"
-    });
-  }
-};
+      return res.status(200).json(response(findOrder));
+    } catch (error) {
+      if (error.name)
+        return res.status(200).json(responseError(400, error.name));
+      return res.status(200).json(responseError(400, error.toString()));
+    }
+  },
 
-exports.orderListUser = async (req, res) => {
-  try {
-    const data = await Order.findAll({
-      where: { id_user: req.user.userId },
-
-      include: [
-        {
-          model: Payment
-        },
-        {
-          model: User
-        },
-        {
-          model: Kereta,
-          include: [
-            {
-              model: Typekereta
-            }
-          ]
-        }
-      ]
-    });
-
-    res.send({
-      data
-    });
-  } catch (error) {
-    res.status(401).send({
-      message: error.message
-    });
-  }
+  create: async (req, res) => {
+    try {
+      const params = req.body;
+      const saved = await orderService.create(params);
+      return res.status(200).json(response(saved));
+    } catch (error) {
+      if (error.name)
+        return res.status(200).json(responseError(400, error.name));
+      return res.status(200).json(responseError(400, error.toString()));
+    }
+  },
+  update: async (req, res) => {
+    try {
+      const params = req.body;
+      params.updatedAt = new Date();
+      const id = req.params.id;
+      const update = await orderService.update(id, params);
+      return res.status(200).json(response(update));
+    } catch (error) {
+      if (error.name)
+        return res.status(200).json(responseError(400, error.name));
+      return res.status(200).json(responseError(400, error.toString()));
+    }
+  },
 };

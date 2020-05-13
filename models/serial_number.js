@@ -1,11 +1,15 @@
-'use strict';
+"use strict";
 module.exports = (sequelize, DataTypes) => {
-  const serial_number = sequelize.define('serial_number', {
-    name: DataTypes.STRING,
-    number: DataTypes.INTEGER
-  }, {});
-  serial_number.associate = function(models) {
+  const serial_numbers = sequelize.define(
+    "serial_numbers",
+    {
+      nama: DataTypes.STRING,
+      nomor: DataTypes.INTEGER,
+    },
+    {}
+  );
+  serial_numbers.associate = function (models) {
     // associations can be defined here
   };
-  return serial_number;
+  return serial_numbers;
 };

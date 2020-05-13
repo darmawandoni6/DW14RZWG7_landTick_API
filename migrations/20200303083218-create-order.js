@@ -6,52 +6,51 @@ module.exports = {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
-      },
-      no_invoice: {
-        type: Sequelize.STRING
-      },
-      barcode: {
-        type: Sequelize.STRING
-      },
-      id_tiket: {
         type: Sequelize.INTEGER,
-        references: {
-          model: "kereta",
-          key: "id"
-        },
-        onUpdate: "cascade",
-        onDelete: "cascade"
       },
-      id_user: {
+      noOrder: {
+        type: Sequelize.STRING(10),
+      },
+      idUser: {
         type: Sequelize.INTEGER,
+        allowNull: false,
         references: {
           model: "users",
-          key: "id"
+          key: "id",
         },
         onUpdate: "cascade",
-        onDelete: "cascade"
+        onDelete: "cascade",
       },
-      id_payment: {
+      idKereta: {
         type: Sequelize.INTEGER,
+        allowNull: false,
         references: {
-          model: "payments",
-          key: "id"
+          model: "trains",
+          key: "id",
         },
         onUpdate: "cascade",
-        onDelete: "cascade"
+        onDelete: "cascade",
+      },
+      qty: {
+        type: Sequelize.INTEGER,
+      },
+      harga: {
+        type: Sequelize.INTEGER,
+      },
+      status: {
+        type: Sequelize.ENUM("Pending", "Success", "Cancel"),
       },
       createdAt: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       },
       updatedAt: {
         allowNull: false,
-        type: Sequelize.DATE
-      }
+        type: Sequelize.DATE,
+      },
     });
   },
   down: (queryInterface, Sequelize) => {
     return queryInterface.dropTable("orders");
-  }
+  },
 };
