@@ -10,8 +10,6 @@ module.exports = {
       },
       idImage: {
         type: Sequelize.STRING,
-        allowNull: false,
-        primaryKey: true,
       },
       ImageName: {
         type: Sequelize.STRING,
