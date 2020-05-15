@@ -39,7 +39,6 @@ module.exports = {
       };
       const saved = await imageService.create(image);
       if (!saved) res.status(200).json(responseError(500));
-
       return res.status(200).json(response(saved));
     } catch (error) {
       if (error.name)

@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
   );
   payment.associate = function (models) {
     // associations can be defined here
-    payments.belongsTo(models.image, {
+    payment.belongsTo(models.image, {
       foreignKey: "attachment",
       as: "image",
     });

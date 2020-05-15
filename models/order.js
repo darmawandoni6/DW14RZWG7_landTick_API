@@ -22,7 +22,7 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: "idUser",
       as: "user",
     });
-    orders.hasMany(models.payments, {
+    orders.hasMany(models.payment, {
       foreignKey: "idOrder",
       as: "payment",
     });

@@ -1,9 +1,9 @@
-const { payments } = require("../models");
+const { payment } = require("../models");
 
 module.exports = {
   create: async (params) => {
     try {
-      const saved = await payments.create(params);
+      const saved = await payment.create(params);
       return saved;
     } catch (err) {
       console.log(err.message);
@@ -11,7 +11,7 @@ module.exports = {
   },
   show: async () => {
     try {
-      const result = await payments.findAll();
+      const result = await payment.findAll();
       return result;
     } catch (err) {
       console.log(err.message);
@@ -20,7 +20,7 @@ module.exports = {
 
   showByIdOrder: async (idOrder) => {
     try {
-      const result = payments.findOne({
+      const result = payment.findOne({
         where: { idOrder },
       });
       return result;
