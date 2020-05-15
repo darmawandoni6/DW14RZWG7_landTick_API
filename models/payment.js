@@ -1,7 +1,7 @@
 "use strict";
 module.exports = (sequelize, DataTypes) => {
-  const payments = sequelize.define(
-    "payments",
+  const payment = sequelize.define(
+    "payment",
     {
       idOrder: DataTypes.INTEGER,
       totalHarga: DataTypes.INTEGER,
@@ -9,12 +9,12 @@ module.exports = (sequelize, DataTypes) => {
     },
     {}
   );
-  payments.associate = function (models) {
+  payment.associate = function (models) {
     // associations can be defined here
     payments.belongsTo(models.image, {
       foreignKey: "attachment",
       as: "image",
     });
   };
-  return payments;
+  return payment;
 };
